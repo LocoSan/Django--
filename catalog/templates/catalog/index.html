@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Гардероб — магазин одежды</title>
+    <link rel="stylesheet" href="{% static 'catalog/style.css' %}">
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Гардероб</h1>
+        <p>Одежда для работы, отдыха и тренировок.</p>
+    </div>
+</header>
+<main class="container">
+    <section class="preferences">
+        <h2>Ваши предпочтения</h2>
+        <p>Выберите стиль и размер. Мы запомним их в этом браузере.</p>
+        <div class="actions">
+            <form method="post" action="{% url 'catalog' %}">
+                {% csrf_token %}
+                {{ form.as_div }}
+                <button type="submit">Сохранить</button>
+            </form>
+            <form method="post" action="{% url 'reset' %}">
+                {% csrf_token %}
+                <button class="secondary" type="submit">Сбросить</button>
+            </form>
+        </div>
+    </section>
+    <section>
+        <h2>Каталог</h2>
+        <div class="products">
+            {% for product in products %}
+                <article>
+                    <img src="{% static product.image %}" alt="{{ product.name }}">
+                    <div class="product-info">
+                        <p class="style">{{ product.style_label }}</p>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        <p>Размеры: {{ product.sizes|join:", " }}</p>
+                        <strong>{{ product.price }} ₽</strong>
+                    </div>
+                </article>
+            {% empty %}
+                <p>Нет одежды с такими параметрами. Попробуйте изменить выбор.</p>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+</body>
+</html>
